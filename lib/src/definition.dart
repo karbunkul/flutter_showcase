@@ -31,4 +31,6 @@ class PropValues {
       return data[id];
     }
   }
+
+  bool hasKey(String key) => data.containsKey(key);
 }

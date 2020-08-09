@@ -21,9 +21,11 @@ class Preferences with ChangeNotifier {
     notifyListeners();
   }
 
-  void changeTheme(ThemeInfo themeInfo) {
-    _currentTheme = themeInfo.data;
-    _notify();
+  void changeTheme(ThemeData themeData) {
+    if (identical(themeData, _currentTheme) == false) {
+      _currentTheme = themeData;
+      _notify();
+    }
   }
 
   List<ThemeItem> get themes => _themes.map((e) {

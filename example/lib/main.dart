@@ -19,6 +19,17 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Showcase(
+        themes: [
+          ThemeInfo(data: ThemeData.dark(), title: 'Dark Theme'),
+          ThemeInfo(
+            data: ThemeData(primarySwatch: Colors.red),
+            title: 'Red Theme',
+          ),
+          ThemeInfo(
+            data: ThemeData(primarySwatch: Colors.amber),
+            title: 'Amber Theme',
+          ),
+        ],
         definitions: [
           Definition(
               title: 'Test',
@@ -29,13 +40,21 @@ class MyApp extends StatelessWidget {
                   initialData: 'foo bar',
                   widget: TextFieldProp(),
                 ),
+                Prop<bool>(
+                  id: 'is_req',
+                  isRequired: true,
+                  widget: CheckboxProp('Is req?'),
+                ),
               ],
               builder: (BuildContext context, PropValues values) {
+                if (values.value('is_req') == false) {
+                  return Text('failed');
+                }
                 return Text(values.value('data') ?? 'default');
               }),
           Definition(
             title: 'Custom scene with tabs',
-            sceneBuilder: (_, scene) => SceneWithTabs(scene: scene),
+//            sceneBuilder: (_, scene) => SceneWithTabs(scene: scene),
             props: [
               Prop<String>(
                 id: 'data',
@@ -51,6 +70,28 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+class CheckboxProp implements PropWidget<bool> {
+  final String title;
+
+  CheckboxProp(this.title);
+  @override
+  Widget builder(BuildContext context, bool value, onChanged) {
+    return Row(
+      children: <Widget>[
+        Checkbox(value: value ?? false, onChanged: onChanged),
+        SizedBox(width: 16),
+        Text(this.title ?? ''),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {}
+
+  @override
+  void init(bool initialData) {}
 }
 
 class TextFieldProp implements PropWidget<String> {

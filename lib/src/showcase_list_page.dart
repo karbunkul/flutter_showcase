@@ -4,6 +4,7 @@ import 'package:showcase/src/definition.dart';
 import 'package:showcase/src/scene_view_page.dart';
 import 'package:showcase/src/preferences.dart';
 import 'package:showcase/src/theme_info.dart';
+import 'package:showcase/src/theme_item.dart';
 
 class ShowcaseListPage extends StatefulWidget {
   final Preferences preferences;
@@ -20,6 +21,36 @@ class _ShowcaseListPageState extends State<ShowcaseListPage> {
     return widget.definitions != null ? widget.definitions : [];
   }
 
+  List<Widget> actions() {
+    List<Widget> items = [];
+
+    if (widget.preferences.themes.length > 1) {
+      items.add(PopupMenuButton<ThemeItem>(
+        itemBuilder: (_) {
+          return widget.preferences.themes.map((e) {
+            var trailing;
+            if (e.current == true) {
+              trailing = Icon(Icons.check);
+            }
+            return PopupMenuItem<ThemeItem>(
+              child: ListTile(
+                title: Text(e.title),
+                trailing: trailing,
+              ),
+              value: e,
+            );
+          }).toList();
+        },
+        icon: Icon(Icons.palette),
+        onSelected: (value) {
+          widget.preferences.changeTheme(value.data);
+        },
+      ));
+    }
+
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -27,16 +58,7 @@ class _ShowcaseListPageState extends State<ShowcaseListPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('Showcase'),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.palette),
-              onPressed: () {
-                print(widget.preferences.themes[0].current);
-                widget.preferences
-                    .changeTheme(ThemeInfo(data: ThemeData.dark()));
-              },
-            )
-          ],
+          actions: actions(),
         ),
         body: buildList(),
       ),

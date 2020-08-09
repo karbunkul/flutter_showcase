@@ -1,15 +1,15 @@
 import 'package:dynamic_prop/dynamic_prop.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:showcase/src/definition.dart';
-import 'package:showcase/src/theme_info.dart';
 import 'package:showcase/src/theme_item.dart';
 
 class SceneContext {
   final Definition definition;
   final Widget child;
   final OnPropChange onPropChange;
-  final ValueChanged<ThemeInfo> changeTheme;
+  final ValueChanged<ThemeData> changeTheme;
   final List<ThemeItem> themes;
 
   SceneContext({

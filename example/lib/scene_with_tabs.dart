@@ -24,8 +24,7 @@ class _SceneWithTabsState extends State<SceneWithTabs> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.palette),
         onPressed: () {
-          widget.scene
-              .changeTheme(ThemeInfo(data: widget.scene.themes[0].data));
+          widget.scene.changeTheme(widget.scene.themes[0].data);
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
