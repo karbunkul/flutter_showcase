@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         ],
         definitions: [
           Definition(
-              title: 'Test',
+              title: 'TextField',
               props: [
                 Prop<String>(
                   id: 'data',
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
               }),
           Definition(
             title: 'Custom scene with tabs',
-//            sceneBuilder: (_, scene) => SceneWithTabs(scene: scene),
+            sceneBuilder: (_, scene) => SceneWithTabs(scene: scene),
             props: [
               Prop<String>(
                 id: 'data',
@@ -106,7 +106,7 @@ class TextFieldProp implements PropWidget<String> {
 
   @override
   void dispose() {
-    _controller.dispose();
+//    _controller.dispose();
   }
 
   @override
