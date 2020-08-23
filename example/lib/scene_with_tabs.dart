@@ -3,10 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:showcase/showcase.dart';
 
 class SceneWithTabs extends StatefulWidget {
-  final SceneContext scene;
-
-  const SceneWithTabs({Key key, @required this.scene}) : super(key: key);
-
   @override
   _SceneWithTabsState createState() => _SceneWithTabsState();
 }
@@ -14,19 +10,15 @@ class SceneWithTabs extends StatefulWidget {
 class _SceneWithTabsState extends State<SceneWithTabs> {
   int _tabIndex = 0;
 
+  StoryboardScope get scope => StoryboardScope.of(context);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.scene.definition.title),
+        title: Text(scope.definition.title),
       ),
       body: buildBody(),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.palette),
-        onPressed: () {
-          widget.scene.changeTheme(widget.scene.themes[0].data);
-        },
-      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (value) {
           setState(() {
@@ -57,13 +49,13 @@ class _SceneWithTabsState extends State<SceneWithTabs> {
       padding: const EdgeInsets.all(16.0),
       child: IndexedStack(
         children: [
-          Center(child: widget.scene.child),
+          Center(child: scope.content),
           CustomScrollView(
             slivers: [
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (_, index) {
-                    var prop = widget.scene.definition.props.elementAt(index);
+                    var prop = scope.definition.props.elementAt(index);
                     return ListTile(
                       title: Text(
                         'property: ${prop.id}',
@@ -72,11 +64,11 @@ class _SceneWithTabsState extends State<SceneWithTabs> {
                       ),
                       subtitle: DynamicProp(
                         definition: prop,
-                        onPropChange: widget.scene.onPropChange,
+                        onPropChange: scope.onPropChange,
                       ),
                     );
                   },
-                  childCount: widget.scene.definition.props?.length ?? 0,
+                  childCount: scope.definition.props?.length ?? 0,
                 ),
               ),
             ],

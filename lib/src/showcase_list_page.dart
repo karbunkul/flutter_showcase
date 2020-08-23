@@ -1,91 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:showcase/src/change_notifier_builder.dart';
-import 'package:showcase/src/definition.dart';
-import 'package:showcase/src/device_item.dart';
-import 'package:showcase/src/scene_view_page.dart';
-import 'package:showcase/src/preferences.dart';
-import 'package:showcase/src/theme_item.dart';
+import 'package:showcase/src/entities/definition.dart';
+import 'package:showcase/src/entities/entities.dart';
+import 'package:showcase/src/environment.dart';
+import 'package:showcase/src/storyboard_viewer.dart';
+import 'package:showcase/src/ui/environment_layout.dart';
 
 class ShowcaseListPage extends StatefulWidget {
-  final Preferences preferences;
   final List<Definition> definitions;
 
-  const ShowcaseListPage({Key key, this.definitions, this.preferences})
-      : super(key: key);
+  const ShowcaseListPage({Key key, this.definitions}) : super(key: key);
   @override
   _ShowcaseListPageState createState() => _ShowcaseListPageState();
 }
 
 class _ShowcaseListPageState extends State<ShowcaseListPage> {
+  int _lastIndex;
+
   List<Definition> get definitions {
     return widget.definitions != null ? widget.definitions : [];
   }
 
-  List<Widget> actions() {
-    List<Widget> items = [];
+  @override
+  void didUpdateWidget(ShowcaseListPage oldWidget) {
+    if (_lastIndex != null && definitions.length < _lastIndex)
+      _lastIndex = null;
 
-    if (widget.preferences.themes.length > 1) {
-      items.add(PopupMenuButton<ThemeItem>(
-        itemBuilder: (_) {
-          return widget.preferences.themes.map((e) {
-            var trailing;
-            if (e.current == true) {
-              trailing = Icon(Icons.check);
-            }
-            return PopupMenuItem<ThemeItem>(
-              child: ListTile(
-                title: Text(e.title),
-                trailing: trailing,
-              ),
-              value: e,
-            );
-          }).toList();
-        },
-        icon: Icon(Icons.palette),
-        onSelected: (value) {
-          widget.preferences.changeTheme(value.data);
-        },
-      ));
-    }
-
-    if (widget.preferences.devices.length > 1) {
-      items.add(PopupMenuButton<DeviceItem>(
-        itemBuilder: (_) {
-          return widget.preferences.devices.map((e) {
-            var trailing;
-            if (e.current == true) {
-              trailing = Icon(Icons.check);
-            }
-            return PopupMenuItem<DeviceItem>(
-              child: ListTile(
-                title: Text(e.title),
-                trailing: trailing,
-              ),
-              value: e,
-            );
-          }).toList();
-        },
-        icon: Icon(Icons.devices),
-        onSelected: (value) {
-          widget.preferences.changeDevice(
-            width: value.width,
-            height: value.height,
-          );
-        },
-      ));
-    }
-
-    return items;
+    if (_lastIndex != null)
+      Environment().changeDefinition(definitions.elementAt(_lastIndex));
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: widget.preferences.themeData,
+    return EnvironmentLayout(
       child: Scaffold(
         appBar: AppBar(
           title: Text('Showcase'),
-          actions: actions(),
         ),
         body: buildList(),
       ),
@@ -99,17 +49,14 @@ class _ShowcaseListPageState extends State<ShowcaseListPage> {
     return ListView.builder(
       itemBuilder: (_, index) {
         var item = definitions.elementAt(index);
+
         return ListTile(
           title: Text(item.title),
           onTap: () {
+            _lastIndex = index;
+            Environment().changeDefinition(item);
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => ChangeNotifierBuilder(
-                model: widget.preferences,
-                builder: (_, pref) => SceneViewPage(
-                  definition: item,
-                  preferences: pref,
-                ),
-              ),
+              builder: (_) => StoryboardViewer(),
             ));
           },
         );
