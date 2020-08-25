@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:showcase/src/entities/entity_meta.dart';
 
 import 'entities/entities.dart';
 
@@ -21,15 +22,12 @@ class Environment with ChangeNotifier {
     return _constraints;
   }
 
-  List<DeviceItem> get devices {
+  List<EntityMeta<DeviceInfo>> get devices {
     return _devices.map((e) {
-      return DeviceItem(
-        title: e.title,
-        width: e.width,
-        height: e.height,
-        current: _constraints.maxHeight == e.height &&
-            _constraints.maxWidth == e.width,
-      );
+      return EntityMeta<DeviceInfo>(
+          entity: e,
+          current: _constraints.maxHeight == e.height &&
+              _constraints.maxWidth == e.width);
     }).toList();
   }
 
@@ -45,11 +43,10 @@ class Environment with ChangeNotifier {
     return _textScaleFactor ?? 1.0;
   }
 
-  List<TextScaleFactorItem> get textScaleFactors {
+  List<EntityMeta<TextScaleFactorInfo>> get textScaleFactors {
     return _textScaleFactors.map((e) {
-      return TextScaleFactorItem(
-        title: e.title,
-        scaleFactor: e.scaleFactor,
+      return EntityMeta<TextScaleFactorInfo>(
+        entity: e,
         current: textScaleFactor == e.scaleFactor,
       );
     }).toList();
@@ -59,11 +56,10 @@ class Environment with ChangeNotifier {
     return _theme;
   }
 
-  List<ThemeItem> get themes {
+  List<EntityMeta<ThemeInfo>> get themes {
     return _themes.map((e) {
-      return ThemeItem(
-        title: e.title,
-        data: e.data,
+      return EntityMeta<ThemeInfo>(
+        entity: e,
         current: identical(themeData, e.data),
       );
     }).toList();

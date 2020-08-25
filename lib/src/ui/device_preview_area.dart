@@ -15,7 +15,7 @@ class DevicePreviewArea extends StatelessWidget {
         .devices
         .firstWhere((device) => device.current);
 
-    if (device.width > 0 && device.height > 0) {
+    if (device.entity.width > 0 && device.entity.height > 0) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,9 +23,9 @@ class DevicePreviewArea extends StatelessWidget {
           ListTile(
             contentPadding: padding,
             title: Text('Preview area emulate device'),
-            subtitle: Text(device.title),
+            subtitle: Text(device.entity.title),
             trailing: Text(
-              '${device.width.toInt()} x ${device.height.toInt()}',
+              '${device.entity.width.toInt()} x ${device.entity.height.toInt()}',
               style: TextStyle(
                 fontSize: 12,
               ),

@@ -1,6 +1,7 @@
 import 'package:dynamic_prop/dynamic_prop.dart';
 import 'package:flutter/material.dart';
 import 'package:showcase/src/entities/entities.dart';
+import 'package:showcase/src/entities/entity_meta.dart';
 import 'package:showcase/src/storyboard_scope.dart';
 import 'package:showcase/src/ui/device_preview_area.dart';
 
@@ -14,16 +15,16 @@ class _DefaultStoryboardState extends State<DefaultStoryboard> {
     List<Widget> items = [];
 
     if (scope.textScaleFactors.length > 1) {
-      items.add(PopupMenuButton<TextScaleFactorItem>(
+      items.add(PopupMenuButton<EntityMeta<TextScaleFactorInfo>>(
         itemBuilder: (_) {
           return scope.textScaleFactors.map((e) {
             var trailing;
             if (e.current == true) {
               trailing = Icon(Icons.check);
             }
-            return PopupMenuItem<TextScaleFactorItem>(
+            return PopupMenuItem<EntityMeta<TextScaleFactorInfo>>(
               child: ListTile(
-                title: Text(e.title),
+                title: Text(e.entity.title),
                 trailing: trailing,
               ),
               value: e,
@@ -32,22 +33,22 @@ class _DefaultStoryboardState extends State<DefaultStoryboard> {
         },
         icon: Icon(Icons.text_fields),
         onSelected: (value) {
-          scope.changeTextScaleFactor(value.scaleFactor);
+          scope.changeTextScaleFactor(value.entity.scaleFactor);
         },
       ));
     }
 
     if (scope.themes.length > 1) {
-      items.add(PopupMenuButton<ThemeItem>(
+      items.add(PopupMenuButton<EntityMeta<ThemeInfo>>(
         itemBuilder: (_) {
           return scope.themes.map((e) {
             var trailing;
             if (e.current == true) {
               trailing = Icon(Icons.check);
             }
-            return PopupMenuItem<ThemeItem>(
+            return PopupMenuItem<EntityMeta<ThemeInfo>>(
               child: ListTile(
-                title: Text(e.title),
+                title: Text(e.entity.title),
                 trailing: trailing,
               ),
               value: e,
@@ -56,22 +57,22 @@ class _DefaultStoryboardState extends State<DefaultStoryboard> {
         },
         icon: Icon(Icons.palette),
         onSelected: (value) {
-          scope.changeTheme(value.data);
+          scope.changeTheme(value.entity.data);
         },
       ));
     }
 
     if (scope.devices.length > 1) {
-      items.add(PopupMenuButton<DeviceItem>(
+      items.add(PopupMenuButton<EntityMeta<DeviceInfo>>(
         itemBuilder: (_) {
           return scope.devices.map((e) {
             var trailing;
             if (e.current == true) {
               trailing = Icon(Icons.check);
             }
-            return PopupMenuItem<DeviceItem>(
+            return PopupMenuItem<EntityMeta<DeviceInfo>>(
               child: ListTile(
-                title: Text(e.title),
+                title: Text(e.entity.title),
                 trailing: trailing,
               ),
               value: e,
@@ -81,8 +82,8 @@ class _DefaultStoryboardState extends State<DefaultStoryboard> {
         icon: Icon(Icons.devices),
         onSelected: (value) {
           scope.changeDevice(
-            width: value.width,
-            height: value.height,
+            width: value.entity.width,
+            height: value.entity.height,
           );
         },
       ));

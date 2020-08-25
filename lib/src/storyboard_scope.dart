@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:showcase/showcase.dart';
 import 'package:showcase/src/entities/entities.dart';
+import 'package:showcase/src/entities/entity_meta.dart';
 import 'package:showcase/src/environment.dart';
 
 class StoryboardScope extends InheritedWidget {
@@ -34,15 +35,15 @@ class StoryboardScope extends InheritedWidget {
     return Environment().changeDevice(width: width, height: height);
   }
 
-  List<TextScaleFactorItem> get textScaleFactors {
+  List<EntityMeta<TextScaleFactorInfo>> get textScaleFactors {
     return Environment().textScaleFactors;
   }
 
-  List<ThemeItem> get themes {
+  List<EntityMeta<ThemeInfo>> get themes {
     return Environment().themes;
   }
 
-  List<DeviceItem> get devices {
+  List<EntityMeta<DeviceInfo>> get devices {
     return Environment().devices;
   }
 
