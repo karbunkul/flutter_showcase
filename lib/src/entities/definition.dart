@@ -1,20 +1,15 @@
 import 'package:flutter/widgets.dart';
+import 'package:showcase/src/entities/preset_info.dart';
 import 'package:showcase/src/entities/prop.dart';
 
 typedef ItemBuilder = Function(BuildContext context, PropValues values);
 
-class Definition {
-  final String title;
-  final Widget storyboard;
-  final List<Prop> props;
-  final ItemBuilder builder;
-
-  Definition({
-    @required this.title,
-    @required this.builder,
-    this.storyboard,
-    this.props,
-  });
+abstract class Definition {
+  String get title;
+  List<Prop> get props;
+  Widget builder(BuildContext context, PropValues values);
+  Widget get storyboard => null;
+  List<PresetInfo> get presets => null;
 }
 
 class PropValues {

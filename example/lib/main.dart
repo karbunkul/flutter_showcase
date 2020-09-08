@@ -1,4 +1,5 @@
 import 'package:dynamic_prop/dynamic_prop.dart';
+import 'package:example/definitions/definitions.dart';
 import 'package:flutter/material.dart';
 import 'package:showcase/showcase.dart';
 
@@ -35,81 +36,9 @@ class MyApp extends StatelessWidget {
           ),
         ],
         definitions: [
-          Definition(
-            props: [
-              Prop<String>(
-                id: 'data',
-                widget: TextFieldProp(),
-                initialData: 'Hello World',
-              ),
-              Prop<double>(
-                initialData: 70,
-                id: 'width',
-                widget: SliderProp(min: 30, max: 150),
-              ),
-              Prop<double>(
-                initialData: 60,
-                id: 'height',
-                widget: SliderProp(min: 30, max: 150),
-              ),
-            ],
-            builder: (context, values) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(values.value('data')),
-                  SizedBox(height: 32),
-                  Container(
-                    width: values.value('width'),
-                    height: values.value('height'),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              );
-            },
-            title: 'Foo bar',
-          ),
-          Definition(
-            storyboard: FullscreenStoryboard(),
-            props: [
-              Prop<String>(
-                id: 'data',
-                widget: TextFieldProp(),
-                initialData: 'Hello World',
-              ),
-              Prop<double>(
-                initialData: 70,
-                id: 'width',
-                widget: SliderProp(min: 30, max: 150),
-              ),
-              Prop<double>(
-                initialData: 60,
-                id: 'height',
-                widget: SliderProp(min: 30, max: 150),
-              ),
-            ],
-            builder: (context, values) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(values.value('data')),
-                  SizedBox(height: 32),
-                  Container(
-                    width: values.value('width'),
-                    height: values.value('height'),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              );
-            },
-            title: 'Fullscreen Foo bar',
-          ),
+          FooBarDefinition(),
+          FullscreenFooBarDefinition(),
+          NotifyScopeDefinition(),
         ],
       ),
     );
@@ -136,48 +65,4 @@ class CheckboxProp implements PropWidget<bool> {
 
   @override
   void init(bool initialData) {}
-}
-
-class TextFieldProp implements PropWidget<String> {
-  TextEditingController _controller;
-  @override
-  Widget builder(BuildContext context, String value, onChanged) {
-    return TextField(
-      onChanged: onChanged,
-      controller: _controller,
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-  }
-
-  @override
-  void init(String initialData) {
-    _controller = TextEditingController(text: initialData);
-  }
-}
-
-class SliderProp implements PropWidget<double> {
-  final double min;
-  final double max;
-
-  double _data;
-
-  SliderProp({@required this.min, @required this.max});
-
-  @override
-  Widget builder(BuildContext context, double value, onChanged) {
-    var _value = value ?? _data;
-    return Slider(min: min, max: max, value: _value, onChanged: onChanged);
-  }
-
-  @override
-  void dispose() {}
-
-  @override
-  void init(double initialData) {
-    _data = initialData ?? min;
-  }
 }

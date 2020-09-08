@@ -48,7 +48,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: a015fccaa50487b7c4cde3f61dc7e33d2fdc4701
+      resolved-ref: "7e34bf90245d3d03c4f4807e46febeb7dcdb3909"
       url: "https://github.com/karbunkul/flutter_dynamic_prop.git"
     source: git
     version: "0.0.1"

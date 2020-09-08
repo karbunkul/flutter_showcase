@@ -4,20 +4,31 @@ import 'package:flutter/widgets.dart';
 import 'package:showcase/showcase.dart';
 import 'package:showcase/src/entities/entities.dart';
 import 'package:showcase/src/entities/entity_meta.dart';
+import 'package:showcase/src/entities/preset_info.dart';
 import 'package:showcase/src/environment.dart';
 
 class StoryboardScope extends InheritedWidget {
   final Widget content;
-  final OnPropChange onPropChange;
+  final OnPropChange onPropChanged;
+  final ValueChanged<PresetInfo> onPresetChanged;
+  final Map<String, dynamic> state;
+  final List<PresetState> presets;
+  final VoidCallback onResetState;
 
-  const StoryboardScope({
+  StoryboardScope({
     Key key,
     @required Widget child,
     @required this.content,
-    this.onPropChange,
+    @required this.state,
+    this.onPropChanged,
+    this.onPresetChanged,
+    this.onResetState,
+    this.presets,
   })  : assert(child != null),
         assert(content != null),
-        super(key: key, child: child);
+        super(key: key, child: child) {
+    Environment().setValues(id: definition.title, values: state);
+  }
 
   static StoryboardScope of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<StoryboardScope>();
@@ -35,16 +46,26 @@ class StoryboardScope extends InheritedWidget {
     return Environment().changeDevice(width: width, height: height);
   }
 
-  List<EntityMeta<TextScaleFactorInfo>> get textScaleFactors {
+  List<TextScaleFactorState> get textScaleFactors {
     return Environment().textScaleFactors;
   }
 
-  List<EntityMeta<ThemeInfo>> get themes {
+  List<ThemeState> get themes {
     return Environment().themes;
   }
 
-  List<EntityMeta<DeviceInfo>> get devices {
+  List<DeviceState> get devices {
     return Environment().devices;
+  }
+
+  List<PropState> get props {
+    return definition.props.map((e) {
+      var value;
+      if (state.containsKey(e.id)) {
+        value = state[e.id];
+      }
+      return PropState(entity: e, value: value);
+    }).toList();
   }
 
   @override

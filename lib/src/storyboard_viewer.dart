@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:showcase/showcase.dart';
 import 'package:showcase/src/entities/entities.dart';
+import 'package:showcase/src/entities/preset_info.dart';
 import 'package:showcase/src/environment.dart';
 import 'package:showcase/src/storyboard_scope.dart';
 import 'package:showcase/src/ui/environment_layout.dart';
@@ -12,6 +13,7 @@ class StoryboardViewer extends StatefulWidget {
 
 class _StoryboardViewerState extends State<StoryboardViewer> {
   Map<String, dynamic> _values = Map();
+  String _preset;
 
   Widget content() {
     Widget child =
@@ -30,7 +32,6 @@ class _StoryboardViewerState extends State<StoryboardViewer> {
         child: child,
         data: MediaQuery.of(context).copyWith(
           textScaleFactor: Environment().textScaleFactor,
-          devicePixelRatio: 3.6,
         ),
       );
     }
@@ -57,12 +58,16 @@ class _StoryboardViewerState extends State<StoryboardViewer> {
   @override
   Widget build(BuildContext context) {
     return StoryboardScope(
+      state: _values,
       content: content(),
-      onPropChange: (id, value) {
+      onPropChanged: (id, value) {
         setState(() {
           _values[id] = value;
         });
       },
+      presets: presets(),
+      onResetState: _onResetState,
+      onPresetChanged: _onPresetChanged,
       child: EnvironmentLayout(
         onChanged: () {
           if ((context as Element).dirty == false) {
@@ -76,7 +81,7 @@ class _StoryboardViewerState extends State<StoryboardViewer> {
     );
   }
 
-  void initValues() {
+  void resetState() {
     var props = Environment().definition.props;
     if (props != null && props.length > 0) {
       setState(() {
@@ -85,5 +90,49 @@ class _StoryboardViewerState extends State<StoryboardViewer> {
         });
       });
     }
+  }
+
+  void initValues() {
+    var values = Environment().getValues(Environment().definition.title);
+    if (values != null) {
+      _values = values;
+    } else {
+      resetState();
+    }
+  }
+
+  void _onPresetChanged(PresetInfo value) {
+    setState(() {
+      _preset = value.title;
+      Map<String, dynamic> values = Map();
+      final List<Prop> props = Environment().definition.props;
+      if (props != null && props.length > 0) {
+        props.forEach((e) {
+          values[e.id] = value.values[e.id] ?? e.initialData;
+        });
+      }
+      _values = values;
+      Environment().setValues(
+        id: Environment().definition.title,
+        values: values,
+      );
+    });
+  }
+
+  void _onResetState() {
+    setState(() {
+      _preset = null;
+      resetState();
+    });
+  }
+
+  List<PresetState> presets() {
+    final presets = Environment().definition.presets;
+    if (presets != null) {
+      return presets.map((e) {
+        return PresetState(entity: e, current: e.title == _preset);
+      }).toList();
+    }
+    return [];
   }
 }

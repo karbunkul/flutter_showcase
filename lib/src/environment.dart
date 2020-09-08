@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:showcase/src/entities/entity_meta.dart';
+import 'package:showcase/src/state_storage.dart';
 
 import 'entities/entities.dart';
 
@@ -13,6 +14,7 @@ class Environment with ChangeNotifier {
   List<DeviceInfo> _devices;
   List<TextScaleFactorInfo> _textScaleFactors;
   Definition _definition;
+  StateStorage _stateStorage = StateStorage();
 
   factory Environment() => _singleton;
 
@@ -22,9 +24,9 @@ class Environment with ChangeNotifier {
     return _constraints;
   }
 
-  List<EntityMeta<DeviceInfo>> get devices {
+  List<DeviceState> get devices {
     return _devices.map((e) {
-      return EntityMeta<DeviceInfo>(
+      return DeviceState(
           entity: e,
           current: _constraints.maxHeight == e.height &&
               _constraints.maxWidth == e.width);
@@ -43,9 +45,9 @@ class Environment with ChangeNotifier {
     return _textScaleFactor ?? 1.0;
   }
 
-  List<EntityMeta<TextScaleFactorInfo>> get textScaleFactors {
+  List<TextScaleFactorState> get textScaleFactors {
     return _textScaleFactors.map((e) {
-      return EntityMeta<TextScaleFactorInfo>(
+      return TextScaleFactorState(
         entity: e,
         current: textScaleFactor == e.scaleFactor,
       );
@@ -56,9 +58,9 @@ class Environment with ChangeNotifier {
     return _theme;
   }
 
-  List<EntityMeta<ThemeInfo>> get themes {
+  List<ThemeState> get themes {
     return _themes.map((e) {
-      return EntityMeta<ThemeInfo>(
+      return ThemeState(
         entity: e,
         current: identical(themeData, e.data),
       );
@@ -105,6 +107,14 @@ class Environment with ChangeNotifier {
       maxHeight: deviceInfo.height,
       maxWidth: deviceInfo.width,
     );
+  }
+
+  void setValues({String id, Map<String, dynamic> values}) {
+    _stateStorage.setValues(id: id, values: values);
+  }
+
+  Map<String, dynamic> getValues(String id) {
+    return _stateStorage.getValues(id);
   }
 
   void _notify() {

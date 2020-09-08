@@ -70,15 +70,16 @@ class __PropsState extends State<_Props> with AutomaticKeepAliveClientMixin {
       SliverList(
         delegate: SliverChildBuilderDelegate(
           (_, index) {
-            var prop = scope.definition.props.elementAt(index);
+            var prop = scope.props.elementAt(index);
             return ListTile(
               title: Text(
-                'property: ${prop.id}',
+                'property: ${prop.entity.id}',
                 style: TextStyle(fontSize: 12),
               ),
               subtitle: DynamicProp(
-                definition: prop,
-                onPropChange: scope.onPropChange,
+                definition: prop.entity,
+                initialData: prop.value,
+                onPropChange: scope.onPropChanged,
               ),
             );
           },

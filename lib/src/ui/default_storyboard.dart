@@ -1,5 +1,6 @@
 import 'package:dynamic_prop/dynamic_prop.dart';
 import 'package:flutter/material.dart';
+import 'package:showcase/showcase.dart';
 import 'package:showcase/src/entities/entities.dart';
 import 'package:showcase/src/entities/entity_meta.dart';
 import 'package:showcase/src/storyboard_scope.dart';
@@ -15,14 +16,14 @@ class _DefaultStoryboardState extends State<DefaultStoryboard> {
     List<Widget> items = [];
 
     if (scope.textScaleFactors.length > 1) {
-      items.add(PopupMenuButton<EntityMeta<TextScaleFactorInfo>>(
+      items.add(PopupMenuButton<TextScaleFactorState>(
         itemBuilder: (_) {
           return scope.textScaleFactors.map((e) {
             var trailing;
             if (e.current == true) {
               trailing = Icon(Icons.check);
             }
-            return PopupMenuItem<EntityMeta<TextScaleFactorInfo>>(
+            return PopupMenuItem<TextScaleFactorState>(
               child: ListTile(
                 title: Text(e.entity.title),
                 trailing: trailing,
@@ -39,14 +40,14 @@ class _DefaultStoryboardState extends State<DefaultStoryboard> {
     }
 
     if (scope.themes.length > 1) {
-      items.add(PopupMenuButton<EntityMeta<ThemeInfo>>(
+      items.add(PopupMenuButton<ThemeState>(
         itemBuilder: (_) {
           return scope.themes.map((e) {
             var trailing;
             if (e.current == true) {
               trailing = Icon(Icons.check);
             }
-            return PopupMenuItem<EntityMeta<ThemeInfo>>(
+            return PopupMenuItem<ThemeState>(
               child: ListTile(
                 title: Text(e.entity.title),
                 trailing: trailing,
@@ -63,14 +64,14 @@ class _DefaultStoryboardState extends State<DefaultStoryboard> {
     }
 
     if (scope.devices.length > 1) {
-      items.add(PopupMenuButton<EntityMeta<DeviceInfo>>(
+      items.add(PopupMenuButton<DeviceState>(
         itemBuilder: (_) {
           return scope.devices.map((e) {
             var trailing;
             if (e.current == true) {
               trailing = Icon(Icons.check);
             }
-            return PopupMenuItem<EntityMeta<DeviceInfo>>(
+            return PopupMenuItem<DeviceState>(
               child: ListTile(
                 title: Text(e.entity.title),
                 trailing: trailing,
@@ -108,6 +109,7 @@ class _DefaultStoryboardState extends State<DefaultStoryboard> {
       slivers: <Widget>[
         content(),
         SliverToBoxAdapter(child: SizedBox(height: 32)),
+        presets(),
         props(),
       ],
     );
@@ -125,15 +127,16 @@ class _DefaultStoryboardState extends State<DefaultStoryboard> {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (_, index) {
-          var prop = scope.definition.props.elementAt(index);
+          var prop = scope.props.elementAt(index);
           return ListTile(
             title: Text(
-              'property: ${prop.id}',
+              'property: ${prop.entity.id}',
               style: TextStyle(fontSize: 12),
             ),
             subtitle: DynamicProp(
-              definition: prop,
-              onPropChange: scope.onPropChange,
+              initialData: prop.value,
+              definition: prop.entity,
+              onPropChange: scope.onPropChanged,
             ),
           );
         },
@@ -143,4 +146,29 @@ class _DefaultStoryboardState extends State<DefaultStoryboard> {
   }
 
   StoryboardScope get scope => StoryboardScope.of(context);
+
+  Widget presets() {
+    Widget child = Container();
+
+    if (scope.presets.length > 0) {
+      child = Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: DropdownButton<PresetState>(
+          hint: Text('Predefined state values'),
+          underline: Container(),
+          items: scope.presets.map((value) {
+            return new DropdownMenuItem<PresetState>(
+              value: value,
+              child: Text(value.entity.title),
+            );
+          }).toList(),
+          onChanged: (_) {
+            scope.onPresetChanged(_.entity);
+          },
+        ),
+      );
+    }
+
+    return SliverToBoxAdapter(child: child);
+  }
 }
